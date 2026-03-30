@@ -1,3 +1,5 @@
 sample: sample.cpp
-	g++ -I ../syncdaq/include $< -o $@
-	
+	g++ $< -o $@ -O3
+
+clean:
+	rm -f sample

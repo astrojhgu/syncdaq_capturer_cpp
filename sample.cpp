@@ -1,11 +1,21 @@
-#include <syncdaq.h>
 #include <iostream>
 #include <cstring>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <complex>
-using namespace syncdaq;
+
+
+struct Payload{
+    uint32_t head_magic;
+    uint32_t version;
+    uint32_t port_id; 
+    uint32_t data_type;
+    uint64_t pkt_cnt;
+    uint64_t tail_magic;
+    std::complex<int16_t> data[2048];//int16_t payload[4096];
+};
+
 int main() {
     // 1. 创建 socket
     int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -17,7 +27,7 @@ int main() {
     // 2. 绑定本地端口
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(4002);           // 监听端口
+    addr.sin_port = htons(4001);           // 监听端口
     addr.sin_addr.s_addr = INADDR_ANY;      // 监听所有网卡
 
     if (bind(sockfd, (sockaddr*)&addr, sizeof(addr)) < 0) {
@@ -26,7 +36,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "Listening on UDP port 4000...\n";
+    std::cout << "Listening on UDP port 4001...\n";
 
     // 3. 接收数据
     
